@@ -197,6 +197,9 @@ module MoSQL
         end
       when BSON::DBRef
         v.object_id.to_s
+      when String
+        # Remove invalid UTF-8 which could come from mongodb
+        v.scrub
       else
         v
       end
@@ -263,6 +266,9 @@ module MoSQL
       when Float
         # NaN is illegal in JSON. Translate into null.
         value.nan? ? nil : value
+      when String
+        # Remove invalid UTF-8 which could come from mongodb
+        value.scrub
       else
         value
       end
